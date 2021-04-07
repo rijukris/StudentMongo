@@ -8,6 +8,16 @@ my_coll = None
 app = Flask(__name__)
 
 
+@app.route("/")
+def home():
+    return "<h1>Welcome to Student Portal</h1>"
+
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
 @app.route("/students")
 def get_students():
     global my_coll
@@ -44,6 +54,15 @@ def create_student():
     return f"Created one student"
 
 
+@app.route("/login", methods=['POST'])
+def verify_login():
+    if request.form['username'] == "rijukris" and request.form['password'] == "123":
+        return get_students()
+    else:
+        return render_template("login.html", error="Invalid username/password")
+
+
+
 @app.route("/students", methods=['DELETE'])
 def delete_students():
     result = my_coll.delete_many({})
@@ -54,12 +73,6 @@ def delete_students():
 def delete_student_path(mobile):
     result = my_coll.delete_one({"mobile": mobile})
     return f"Deleted {result.deleted_count} student"
-
-
-
-
-
-
 
 
 def main():
